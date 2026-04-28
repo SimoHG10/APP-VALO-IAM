@@ -1,0 +1,586 @@
+
+<style>
+:root{--bg:#0f1117;--sf:#181c27;--cd:#1e2235;--br:#2a2f45;--tx:#e8eaf0;--mu:#8a90a8;--dm:#555c78;--gr:#22c55e;--rd:#ef4444;--bl:#3b82f6;--am:#f59e0b;--pu:#a78bfa;--cy:#06b6d4;--r:8px;--rl:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--font-sans),sans-serif;font-size:13px;line-height:1.5}
+.app{padding:.75rem 0 2rem}
+.topbar{display:flex;align-items:center;gap:12px;padding:.75rem 1rem;background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);margin-bottom:.75rem;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:8px;background:#c8102e;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
+.cn{font-size:15px;font-weight:500}
+.cs{font-size:11px;color:var(--mu)}
+.pill{font-size:10px;padding:2px 7px;border-radius:99px;border:1px solid;font-weight:500}
+.pill.gr{color:var(--gr);border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)}
+.pill.bl{color:var(--bl);border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.07)}
+.pill.am{color:var(--am);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.07)}
+.pill.pu{color:var(--pu);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.07)}
+.pill.dm{color:var(--mu);border-color:var(--br)}
+.pb{margin-left:auto;text-align:right}
+.pm{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.ps2{font-size:11px;color:var(--rd);margin-top:1px}
+.tabs{display:flex;gap:1px;background:var(--sf);border:1px solid var(--br);border-radius:var(--r);padding:3px;margin-bottom:.75rem;overflow-x:auto}
+.tab{padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--mu);border-radius:6px;white-space:nowrap;transition:.15s}
+.tab.active{background:var(--cd);color:var(--tx)}
+.tab:hover:not(.active){color:var(--tx)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--cd);border:1px solid var(--br);border-radius:var(--rl);padding:.9rem 1rem;margin-bottom:.75rem}
+.ct{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.65rem;padding-bottom:.4rem;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(59,130,246,.15);color:var(--bl);font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem}
+.tile{background:var(--sf);border:1px solid var(--br);border-radius:var(--r);padding:.7rem .75rem}
+.tile .lbl{font-size:10px;color:var(--mu);margin-bottom:3px;font-weight:500}
+.tile .val{font-size:18px;font-weight:700;letter-spacing:-.4px}
+.tile .sub{font-size:10px;color:var(--dm);margin-top:2px}
+.tile.gr .val{color:var(--gr)}.tile.bl .val{color:var(--bl)}.tile.pu .val{color:var(--pu)}.tile.am .val{color:var(--am)}.tile.rd .val{color:var(--rd)}
+.field{margin-bottom:.6rem}
+.field label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu);margin-bottom:4px;font-weight:500}
+.field input{width:100%;padding:7px 10px;font-size:13px;font-weight:600;border:1px solid var(--br);border-radius:var(--r);background:var(--sf);color:var(--tx)}
+.field input:focus{outline:none;border-color:var(--bl)}
+.field input[readonly]{color:var(--dm);cursor:not-allowed}
+.field .ref{font-size:10px;color:var(--bl);margin-top:2px;opacity:.85}
+.field .note{font-size:10px;color:var(--dm);margin-top:2px}
+.fl{position:relative}.lock{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--dm)}
+.slbl{font-size:10px;font-weight:700;color:var(--bl);text-transform:uppercase;letter-spacing:.07em;margin:.7rem 0 .4rem;display:flex;align-items:center;gap:6px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--br)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:right;padding:5px 7px;font-size:9px;font-weight:700;color:var(--mu);border-bottom:1px solid var(--br);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+th:first-child{text-align:left}
+td{text-align:right;padding:5px 7px;border-bottom:1px solid rgba(42,47,69,.5);color:var(--tx)}
+td:first-child{text-align:left;color:var(--mu);font-size:10px}
+tr:hover td{background:rgba(59,130,246,.04)}
+.tr-hi td{color:var(--bl);font-weight:700}
+.tr-tot td{background:rgba(34,197,94,.06);font-weight:700;border-top:1px solid var(--br)}
+.tr-warn td{color:var(--am)}
+.cw{position:relative;width:100%}
+.cw.h180{height:180px}.cw.h240{height:240px}.cw.h280{height:280px}.cw.h300{height:300px}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--mu);margin-bottom:5px}
+.leg span{display:flex;align-items:center;gap:4px}
+.leg .dot{width:8px;height:8px;border-radius:2px}
+.sg{display:grid;gap:2px}
+.sc{padding:5px 3px;border-radius:4px;text-align:center;font-weight:700;font-size:10px;line-height:1.3}
+.sc .sp{font-size:9px;display:block;margin-top:1px;opacity:.85}
+.alert{border-radius:var(--r);padding:.55rem .85rem;font-size:11px;margin-bottom:.65rem;border-left:3px solid;line-height:1.5}
+.alert.gr{border-color:var(--gr);background:rgba(34,197,94,.07)}
+.alert.bl{border-color:var(--bl);background:rgba(59,130,246,.07)}
+.alert.am{border-color:var(--am);background:rgba(245,158,11,.07)}
+.alert.rd{border-color:var(--rd);background:rgba(239,68,68,.07)}
+.alert.pu{border-color:var(--pu);background:rgba(167,139,250,.07)}
+.wtbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:.4rem}
+.wtbl td{padding:4px 6px;border-bottom:1px solid rgba(42,47,69,.4)}
+.wtbl td:first-child{color:var(--mu);font-size:10px}
+.wtbl td:last-child{text-align:right;font-weight:600}
+.wtbl .sum td{border-top:1px solid var(--br);font-weight:700;color:var(--bl);padding-top:6px}
+.wacc-box{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);border-radius:var(--r);padding:.75rem;margin-top:.65rem;text-align:center}
+.formula-box{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:var(--r);padding:.6rem;margin-bottom:.65rem;font-size:10px;color:var(--mu);line-height:1.7}
+.btn{padding:7px 15px;font-size:12px;font-weight:600;border-radius:var(--r);cursor:pointer;border:1px solid var(--br);background:var(--sf);color:var(--tx)}
+.btn:hover{border-color:var(--bl);color:var(--bl)}
+.btn.pri{background:var(--bl);color:#fff;border-color:var(--bl)}
+.btn.sm{padding:4px 10px;font-size:11px}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;background:var(--br);color:var(--mu);font-size:9px;cursor:help;position:relative;flex-shrink:0}
+.tip:hover::after{content:attr(data-tip);position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#0d1117;border:1px solid var(--br);color:var(--tx);font-size:10px;padding:6px 9px;border-radius:6px;width:220px;text-align:left;z-index:100;line-height:1.5;font-weight:400;white-space:normal}
+</style>
+
+<div class="app">
+
+<div class="topbar">
+  <div class="logo">IAM</div>
+  <div>
+    <div class="cn">Itissalat Al-Maghrib — Maroc Telecom</div>
+    <div class="cs">BVC · IAM &nbsp;|&nbsp; Euronext · IAM.PA &nbsp;|&nbsp; ISIN MA0000011488</div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+    <span class="pill pu">V2 Institutionnel</span>
+    <span class="pill gr">FCF EBITDA-based</span>
+    <span class="pill bl">WACC 8,0%</span>
+    <span class="pill am">Mid-year</span>
+    <span class="pill dm">2 segments</span>
+  </div>
+  <div class="pb">
+    <div class="pm">95,50 <span style="font-size:13px;color:var(--mu);font-weight:400">MAD</span></div>
+    <div class="ps2">BVC · figé</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="sw('hist',this)">Historique</button>
+  <button class="tab" onclick="sw('hyp',this)">Hypothèses DCF</button>
+  <button class="tab" onclick="sw('val',this)">Valorisation</button>
+  <button class="tab" onclick="sw('sens',this)">Sensibilité</button>
+  <button class="tab" onclick="sw('scen',this)">Scénarios</button>
+</div>
+
+<!-- ════ HISTORIQUE ════ -->
+<div class="panel active" id="panel-hist">
+<div class="g4" style="margin-bottom:.75rem">
+  <div class="tile bl"><div class="lbl">CA Groupe 2025</div><div class="val">36,7 Mds</div><div class="sub">MAD consolidé</div></div>
+  <div class="tile gr"><div class="lbl">EBITDA 2025</div><div class="val">18,5 Mds</div><div class="sub">marge 50,4%</div></div>
+  <div class="tile pu"><div class="lbl">RN ajusté 2025</div><div class="val">5,65 Mds</div><div class="sub">PDG ajusté</div></div>
+  <div class="tile am"><div class="lbl">Capitalisation</div><div class="val">~84 Mds</div><div class="sub">MAD · BVC</div></div>
+</div>
+
+<div class="card">
+  <div class="ct">Compte de résultat consolidé (MMAD) — données officielles 2020–2025</div>
+  <div class="tw"><table>
+    <tr><th>Indicateur</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>Moy. 5A</th></tr>
+    <tr><td>CA Groupe</td><td>36 017</td><td>35 989</td><td>36 071</td><td>36 831</td><td>36 688</td><td>36 700</td><td>36 456</td></tr>
+    <tr><td>— Maroc</td><td>19 925</td><td>19 921</td><td>19 546</td><td>19 543</td><td>19 143</td><td>18 677</td><td>19 366</td></tr>
+    <tr><td>— Filiales Afrique</td><td>16 092</td><td>16 068</td><td>16 525</td><td>17 288</td><td>17 545</td><td>18 023</td><td>17 090</td></tr>
+    <tr class="tr-hi"><td>EBITDA ajusté</td><td>18 800</td><td>18 589</td><td>18 618</td><td>19 369</td><td>19 197</td><td>18 500</td><td>18 855</td></tr>
+    <tr><td>Marge EBITDA</td><td>52,2%</td><td>51,9%</td><td>51,6%</td><td>52,6%</td><td>52,3%</td><td>50,4%</td><td>51,8%</td></tr>
+    <tr><td>EBITA ajusté</td><td>11 572</td><td>11 506</td><td>12 030</td><td>12 132</td><td>12 182</td><td>11 776</td><td>11 925</td></tr>
+    <tr><td>Marge EBITA</td><td>32,1%</td><td>32,0%</td><td>33,4%</td><td>32,9%</td><td>33,2%</td><td>32,1%</td><td>32,7%</td></tr>
+    <tr class="tr-hi"><td>RN ajusté PDG</td><td>5 765</td><td>5 936</td><td>5 753</td><td>6 132</td><td>6 132</td><td>5 650</td><td>5 914</td></tr>
+    <tr><td>CAPEX (hors lic.)</td><td>5 400</td><td>5 490</td><td>7 646</td><td>7 841</td><td>7 631</td><td>9 395</td><td>7 281</td></tr>
+    <tr><td>CAPEX / CA</td><td>15,0%</td><td>15,3%</td><td>21,2%</td><td>21,3%</td><td>20,8%</td><td>25,6%</td><td>19,8%</td></tr>
+    <tr><td>CFFO ajusté</td><td>10 173</td><td>7 179</td><td>7 798</td><td>10 085</td><td>10 941</td><td>8 022</td><td>8 805</td></tr>
+    <tr><td>Dette nette publiée</td><td>18 000</td><td>14 500</td><td>14 500</td><td>16 400</td><td>22 400</td><td>17 986</td><td>17 157</td></tr>
+    <tr><td>DPA (MAD)</td><td>5,00</td><td>4,78</td><td>2,19</td><td>4,20</td><td>1,43</td><td>4,00</td><td>3,52</td></tr>
+  </table></div>
+</div>
+
+<div class="g2">
+  <div class="card">
+    <div class="ct">CA · EBITDA · RN ajusté (MMAD)</div>
+    <div class="leg"><span><span class="dot" style="background:#3b82f6"></span>CA</span><span><span class="dot" style="background:#22c55e"></span>EBITDA</span><span><span class="dot" style="background:#f59e0b"></span>RN ajusté</span></div>
+    <div class="cw h240"><canvas id="ch-hist" role="img" aria-label="CA EBITDA et RN ajusté IAM 2020 à 2025">CA EBITDA RN IAM.</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">Marges opérationnelles (%)</div>
+    <div class="leg"><span><span class="dot" style="background:#a78bfa"></span>Marge EBITDA</span><span><span class="dot" style="background:#06b6d4"></span>Marge EBITA</span></div>
+    <div class="cw h240"><canvas id="ch-margins" role="img" aria-label="Marges EBITDA et EBITA IAM 2020 à 2025">Marges IAM.</canvas></div>
+  </div>
+</div>
+
+<div class="g2">
+  <div class="card">
+    <div class="ct">Répartition CA 2025 — Maroc vs Afrique</div>
+    <div class="leg"><span><span class="dot" style="background:#3b82f6"></span>Maroc 51%</span><span><span class="dot" style="background:#22c55e"></span>Afrique 49%</span></div>
+    <div class="cw h180"><canvas id="ch-geo" role="img" aria-label="Répartition géographique CA IAM 2025 Maroc 51 pourcent Afrique 49 pourcent">Maroc 51% Afrique 49%.</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">Fiche boursière — données figées BVC</div>
+    <div class="g2" style="gap:.5rem;margin-bottom:.5rem">
+      <div class="tile bl"><div class="lbl">Cours BVC</div><div class="val">95,50 MAD</div><div class="sub">figé</div></div>
+      <div class="tile"><div class="lbl">Nb d'actions</div><div class="val" style="font-size:14px">879,1 M</div><div class="sub">879 095 340 exact</div></div>
+      <div class="tile gr"><div class="lbl">Capitalisation</div><div class="val">83,95 Mds</div><div class="sub">MAD</div></div>
+      <div class="tile am"><div class="lbl">Rdt dividende</div><div class="val">4,19%</div><div class="sub">DPA 4,00 MAD</div></div>
+    </div>
+    <div style="font-size:10px;color:var(--mu);line-height:1.7;border-top:1px solid var(--br);padding-top:.5rem">
+      Actionnariat : SPT/Etisalat 53% · Royaume du Maroc 22% · Flottant 25%<br>
+      52 semaines : 82,0–100,0 MAD · Bêta : 0,87 · PER ajusté : 14,9x
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ HYPOTHÈSES ════ -->
+<div class="panel" id="panel-hyp">
+<div class="alert bl">Modèle V2 institutionnel — 2 segments (Maroc + Afrique) · Formule FCFF EBITDA-based · CAPEX 3 phases · Mid-year convention. Cours et actions figés BVC.</div>
+<div class="g2">
+<div>
+  <div class="card">
+    <div class="ct">Données figées BVC <span class="badge">🔒 Non modifiables</span></div>
+    <div class="field fl"><label>Cours actuel BVC (MAD)</label>
+      <input type="number" value="95.50" readonly><div class="lock">🔒</div>
+      <div class="ref">Source : Bourse de Casablanca · dernière clôture</div>
+    </div>
+    <div class="field fl"><label>Nombre d'actions exact</label>
+      <input type="text" value="879 095 340 (879,1 M)" readonly><div class="lock">🔒</div>
+      <div class="ref">Capital 5 274 572 040 MAD ÷ VN 6 MAD</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Segment Maroc — réel 2025 : 18 677 MMAD</div>
+    <div class="field"><label>CA Maroc 2025 (MMAD)</label>
+      <input type="number" id="ca_ma" value="18677" step="100" oninput="compute()">
+      <div class="ref">Réel 2025 · T1 2026 : +0,7%</div>
+    </div>
+    <div class="field"><label>Croissance Maroc phase 1 — an 1–5 (%)<span class="tip" data-tip="Maroc sous pression (−2,4% en 2025). T1 2026 : +0,7% = signal de stabilisation. 5G et FTTH comme catalyseurs.">?</span></label>
+      <input type="number" id="g_ma1" value="1" step="0.25" oninput="compute()">
+      <div class="ref">T1 2026 : +0,7% · Stabilisation progressive</div>
+    </div>
+    <div class="field"><label>Croissance Maroc phase 2 — an 6–10 (%)</label>
+      <input type="number" id="g_ma2" value="2" step="0.25" oninput="compute()">
+      <div class="ref">Reprise portée par Data fixe et 5G</div>
+    </div>
+    <div class="field"><label>Marge EBITDA Maroc (%)<span class="tip" data-tip="T1 2026 : 53,7%. Historique 2020–2024 : ~57%. Légère tendance baissière.">?</span></label>
+      <input type="number" id="em_ma" value="55" step="0.5" oninput="compute()">
+      <div class="ref">T1 2026 : 53,7% · Hist. : ~57%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Segment Afrique (Moov Africa) — réel 2025 : 18 023 MMAD</div>
+    <div class="field"><label>CA Afrique 2025 (MMAD)</label>
+      <input type="number" id="ca_af" value="18023" step="100" oninput="compute()">
+      <div class="ref">Réel 2025 · T1 2026 : +8,5%</div>
+    </div>
+    <div class="field"><label>Croissance Afrique phase 1 — an 1–5 (%)<span class="tip" data-tip="Croissance soutenue : Data Mobile +15%, Mobile Money +6,5%. T1 2026 : +8,5%.">?</span></label>
+      <input type="number" id="g_af1" value="6" step="0.25" oninput="compute()">
+      <div class="ref">T1 2026 : +8,5% · TCAM 2021–2025 : +5–6%</div>
+    </div>
+    <div class="field"><label>Croissance Afrique phase 2 — an 6–10 (%)</label>
+      <input type="number" id="g_af2" value="4.5" step="0.25" oninput="compute()">
+      <div class="ref">Pénétration data encore faible — potentiel structurel LT</div>
+    </div>
+    <div class="field"><label>Marge EBITDA Afrique (%)<span class="tip" data-tip="T1 2026 : 42,6%. Amélioration progressive attendue grâce aux économies d'échelle.">?</span></label>
+      <input type="number" id="em_af" value="43" step="0.5" oninput="compute()">
+      <div class="ref">T1 2026 : 42,6% · Moy. 2024 : ~43%</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="card">
+    <div class="ct">Paramètres FCF, CAPEX & Actualisation</div>
+    <div class="formula-box">
+      <strong style="color:var(--bl)">FCFF = EBITDA(1−t) + t × D&A − CAPEX − ΔBFR</strong><br>
+      Tax shield = t × D&A · Actualisation mi-période (n − 0,5) · Modèle 2 segments
+    </div>
+    <div class="field"><label>D&A (% du CA consolidé)<span class="tip" data-tip="Utilisé pour le tax shield = t × D&A. Maroc ~19%, Afrique ~15%, consolidé ~17%.">?</span></label>
+      <input type="number" id="da" value="17" step="0.5" oninput="compute()">
+      <div class="ref">Maroc ~19% | Afrique ~15% | Consolidé ~17%</div>
+    </div>
+    <div class="field"><label>IS effectif consolidé (%)<span class="tip" data-tip="IS Maroc 31% + filiales Africa 25–30% → taux effectif consolidé ~33%.">?</span></label>
+      <input type="number" id="tax" value="33" step="1" oninput="compute()">
+      <div class="ref">Consolidé ~33% (IS Maroc 31% + Africa 25–30%)</div>
+    </div>
+
+    <div class="slbl">CAPEX — 3 phases</div>
+    <div class="field"><label>Phase 5G — an 1–3 (% CA)<span class="tip" data-tip="Pic investissement 5G. Guidance IAM 2026 : ~25% du CA. Licences 5G + FTTH + Africa.">?</span></label>
+      <input type="number" id="cx1" value="25" step="0.5" oninput="compute()">
+      <div class="ref">Guidance IAM 2026 : ~25% du CA</div>
+    </div>
+    <div class="field"><label>Normalisation — an 4–7 (% CA)<span class="tip" data-tip="Post-déploiement 5G, retour à la moyenne historique 2022–2024 (~21%).">?</span></label>
+      <input type="number" id="cx2" value="20" step="0.5" oninput="compute()">
+      <div class="ref">Post-5G · Retour moyenne historique ~20–21%</div>
+    </div>
+    <div class="field"><label>Terminal normatif — an 8–10+ (% CA)<span class="tip" data-tip="CAPEX maintenance + croissance = g/ROIC = 2,5%/16% ≈ 15,6%. Opérateur mature.">?</span></label>
+      <input type="number" id="cx3" value="16" step="0.5" oninput="compute()">
+      <div class="ref">Normatif : g/ROIC = 2,5%/16% ≈ 15,6%</div>
+    </div>
+
+    <div class="slbl">Actualisation & Bilan</div>
+    <div class="field"><label>WACC (%)<span class="tip" data-tip="Ke = Rf(3,04%) + β(0,87) × ERP(6,5%) = 8,70%. WACC = 80% × 8,70% + 20% × 2,68% = 8,03%. Fourchette : 7,5–9,0%.">?</span></label>
+      <input type="number" id="wacc" value="8.0" step="0.25" oninput="compute()">
+      <div class="ref">V2 calculé : 8,03% | Ke=8,70% | Kd net=2,68% | Fourchette : 7,5–9,0%</div>
+    </div>
+    <div class="field"><label>ΔBFR (% CA)<span class="tip" data-tip="BFR négatif structurel Télécom : clients paient avant prestation.">?</span></label>
+      <input type="number" id="bfr" value="-1" step="0.25" oninput="compute()">
+      <div class="ref">BFR négatif structurel Télécom : −0,5 à −1,5%</div>
+    </div>
+    <div class="field"><label>g terminal (%)<span class="tip" data-tip="Croissance perpétuelle post-projection. Doit être strictement < WACC. PIB nominal Maroc ~4,5–5%.">?</span></label>
+      <input type="number" id="gterm" value="2.5" step="0.25" oninput="compute()">
+      <div class="ref">PIB nominal Maroc ~4,5% · Prudent : 2,5%</div>
+    </div>
+    <div class="field"><label>Durée projection (années)</label>
+      <input type="number" id="years" value="10" step="1" min="5" max="15" oninput="compute()">
+    </div>
+    <div class="field"><label>Dette nette IFRS 16 incl. (MMAD)<span class="tip" data-tip="17 986 MMAD publiée + ~3 000 MMAD obligations locatives IFRS 16 (explicitement exclues du ratio publié par IAM).">?</span></label>
+      <input type="number" id="debt" value="21000" step="100" oninput="compute()">
+      <div class="ref">17 986 publié + ~3 000 IFRS 16</div>
+    </div>
+    <div class="field"><label>Intérêts minoritaires (MMAD)<span class="tip" data-tip="~20% de la valeur DCF des filiales africaines ≈ −4 500 MMAD. Approche standard sell-side.">?</span></label>
+      <input type="number" id="mino" value="-4500" step="100" oninput="compute()">
+      <div class="ref">Est. : 20% × valeur DCF filiales Africa ≈ −4 500 MMAD</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:.5rem">
+      <button class="btn sm" onclick="resetV2()">↺ Réinitialiser</button>
+      <button class="btn pri" onclick="sw('val',document.querySelectorAll('.tab')[2])">Calculer →</button>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ════ VALORISATION ════ -->
+<div class="panel" id="panel-val">
+  <div class="g4" style="margin-bottom:.65rem" id="kpi-row"></div>
+  <div id="sig-bar"></div>
+  <div class="card">
+    <div class="ct">Projection FCF — 2 segments (MMAD) <span class="badge">EBITDA-based · Mid-year · CAPEX 3 phases</span></div>
+    <div class="tw"><table id="fcf-tbl"><tr><td style="color:var(--mu);padding:1rem">Calcul en attente…</td></tr></table></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct">FCF actualisés par segment (MMAD)</div>
+      <div class="leg"><span><span class="dot" style="background:#3b82f6"></span>Maroc</span><span><span class="dot" style="background:#22c55e"></span>Afrique</span><span><span class="dot" style="background:#a78bfa"></span>Valeur terminale</span></div>
+      <div class="cw h240"><canvas id="ch-fcf" role="img" aria-label="FCF actualisés par segment Maroc et Afrique IAM sur 10 ans">FCF actualisés IAM.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Décomposition EV</div>
+      <div class="leg" id="pie-leg"></div>
+      <div class="cw h240"><canvas id="ch-pie" role="img" aria-label="Décomposition de la valeur d'entreprise entre flux explicites et valeur terminale">EV décomposée.</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Pont EV → Equity Value → Valeur/action <span class="badge">IFRS 16 · Minoritaires corrigés</span></div>
+    <div class="cw h280"><canvas id="ch-bridge" role="img" aria-label="Waterfall de la valeur entreprise vers fonds propres">Pont de valeur.</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">Réconciliation par multiples de marché</div>
+    <div class="tw"><table id="mult-tbl">
+      <tr><th style="text-align:left">Multiple</th><th>IAM V2 base</th><th>Pairs Télécom Afrique</th><th>Lecture</th></tr>
+      <tr><td>EV / EBITDA</td><td id="m1">—</td><td>5–8x</td><td id="m1r">—</td></tr>
+      <tr><td>EV / CA</td><td id="m2">—</td><td>1,5–3x</td><td id="m2r">—</td></tr>
+      <tr><td>PER (RN ajusté 2025)</td><td id="m3">—</td><td>12–18x</td><td id="m3r">—</td></tr>
+      <tr><td>EV / (EBITDA − CAPEX norm.)</td><td id="m4">—</td><td>10–18x</td><td id="m4r">—</td></tr>
+      <tr><td>Rendement dividende</td><td>4,19%</td><td>3–6%</td><td>Attrayant</td></tr>
+    </table></div>
+  </div>
+</div>
+
+<!-- ════ SENSIBILITÉ ════ -->
+<div class="panel" id="panel-sens">
+  <div class="alert bl">Case encadrée = hypothèses base V2 · % = prime/décote vs cours 95,50 MAD figé.</div>
+  <div class="card"><div class="ct">Matrice 1 — Valeur/action (MAD) : WACC × g terminal</div><div id="s1"></div></div>
+  <div class="g2">
+    <div class="card"><div class="ct">Matrice 2 — Valeur/action : Marge EBITDA Maroc × Croissance Afrique</div><div id="s2"></div></div>
+    <div class="card"><div class="ct">Matrice 3 — Valeur/action : CAPEX terminal × WACC</div><div id="s3"></div></div>
+  </div>
+</div>
+
+<!-- ════ SCÉNARIOS ════ -->
+<div class="panel" id="panel-scen">
+  <div class="alert bl">Trois scénarios V2 calibrés sur les fondamentaux réels d'IAM · Cours figé 95,50 MAD · 879 095 340 actions.</div>
+  <div class="g3" id="scen-tiles" style="margin-bottom:.65rem"></div>
+  <div class="card">
+    <div class="ct">Valeur/action par scénario vs cours 95,50 MAD</div>
+    <div class="leg"><span><span class="dot" style="background:#22c55e"></span>Optimiste</span><span><span class="dot" style="background:#3b82f6"></span>Base</span><span><span class="dot" style="background:#f59e0b"></span>Pessimiste</span><span><span class="dot" style="background:#555c78"></span>Cours 95,50</span></div>
+    <div class="cw h300"><canvas id="ch-scen" role="img" aria-label="Comparaison valeur par action IAM selon scénarios optimiste base pessimiste">Scénarios V2.</canvas></div>
+  </div>
+  <div class="card"><div class="ct">Tableau comparatif scénarios V2</div><div class="tw"><table id="scen-tbl"></table></div></div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const SHARES=879.095340,COURS=95.50;
+const DEF={ca_ma:18677,g_ma1:1,g_ma2:2,em_ma:55,ca_af:18023,g_af1:6,g_af2:4.5,em_af:43,da:17,tax:33,cx1:25,cx2:20,cx3:16,wacc:8.0,bfr:-1,gterm:2.5,years:10,debt:21000,mino:-4500};
+let CH={};
+Chart.defaults.color='#8a90a8';
+Chart.defaults.borderColor='#2a2f45';
+Chart.defaults.font={family:'sans-serif',size:10};
+
+function sw(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.className='panel');
+  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
+  document.getElementById('panel-'+id).className='panel active';
+  el.className='tab active';
+  if(id==='hist')renderHist();
+  else if(id==='val')triggerVal();
+  else if(id==='sens')triggerSens();
+  else if(id==='scen')triggerScen();
+}
+
+function gi(id){const e=document.getElementById(id);return e?+e.value||0:0;}
+function fmtM(n){return Math.round(n).toLocaleString('fr-MA');}
+function fmtMds(n){return (n/1000).toFixed(1)+' Mds MAD';}
+function fmtPS(n){return n.toFixed(2)+' MAD';}
+function fmtPct(n){return (n>=0?'+':'')+n.toFixed(1)+'%';}
+function mk(id,cfg,key){if(CH[key])CH[key].destroy();try{CH[key]=new Chart(document.getElementById(id),cfg);}catch(e){}}
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function resetV2(){Object.keys(DEF).forEach(k=>{const e=document.getElementById(k);if(e&&!e.readOnly)e.value=DEF[k];});}
+
+function renderHist(){
+  const YR=['2020','2021','2022','2023','2024','2025'];
+  mk('ch-hist',{type:'bar',data:{labels:YR,datasets:[
+    {label:'CA',data:[36017,35989,36071,36831,36688,36700],backgroundColor:'rgba(59,130,246,.75)',borderRadius:3},
+    {label:'EBITDA',data:[18800,18589,18618,19369,19197,18500],backgroundColor:'rgba(34,197,94,.75)',borderRadius:3},
+    {label:'RN ajusté',data:[5765,5936,5753,6132,6132,5650],backgroundColor:'rgba(245,158,11,.75)',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{y:{ticks:{callback:v=>v>=1000?(v/1000).toFixed(0)+'k':''+v},grid:{color:'#2a2f45'}},x:{grid:{display:false}}}}},'hist');
+  mk('ch-margins',{type:'line',data:{labels:YR,datasets:[
+    {label:'EBITDA%',data:[52.2,51.9,51.6,52.6,52.3,50.4],borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.08)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:'#a78bfa'},
+    {label:'EBITA%',data:[32.1,32.0,33.4,32.9,33.2,32.1],borderColor:'#06b6d4',backgroundColor:'rgba(6,182,212,.06)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:'#06b6d4'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{y:{min:20,max:60,ticks:{callback:v=>v+'%'},grid:{color:'#2a2f45'}},x:{grid:{display:false}}}}},'margins');
+  mk('ch-geo',{type:'doughnut',data:{labels:['Maroc 51%','Afrique 49%'],datasets:[{data:[51,49],backgroundColor:['#3b82f6','#22c55e'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#8a90a8',boxWidth:10,padding:12}}}}},'geo');
+}
+
+function calcV2(p){
+  if(!p||p.gterm>=p.wacc)return null;
+  const rows=[],t=p.tax/100;
+  let ca_ma=p.ca_ma,ca_af=p.ca_af,pvMa=0,pvAf=0;
+  for(let y=1;y<=p.years;y++){
+    ca_ma=ca_ma*(1+(y<=5?p.g_ma1:p.g_ma2)/100);
+    ca_af=ca_af*(1+(y<=5?p.g_af1:p.g_af2)/100);
+    const ca=ca_ma+ca_af;
+    const cxPct=y<=3?p.cx1:y<=7?p.cx2:p.cx3;
+    const da_amt=ca*p.da/100;
+    const capex=ca*cxPct/100;
+    const dbfr=ca*p.bfr/100;
+    const wMa=ca>0?ca_ma/ca:0.5,wAf=1-wMa;
+    const ebitda_ma=ca_ma*p.em_ma/100;
+    const ebitda_af=ca_af*p.em_af/100;
+    const ebitda=ebitda_ma+ebitda_af;
+    const fcf_ma=ebitda_ma*(1-t)+t*da_amt*wMa-capex*wMa-dbfr*wMa;
+    const fcf_af=ebitda_af*(1-t)+t*da_amt*wAf-capex*wAf-dbfr*wAf;
+    const fcf=fcf_ma+fcf_af;
+    const df=Math.pow(1+p.wacc/100,y-0.5);
+    const pv_ma=fcf_ma/df,pv_af=fcf_af/df;
+    pvMa+=pv_ma;pvAf+=pv_af;
+    rows.push({y,ca_ma,ca_af,ca,ebitda,fcf_ma,fcf_af,fcf,pv_ma,pv_af,pv:pv_ma+pv_af,cxPct});
+  }
+  const pvSum=pvMa+pvAf;
+  const lastFCF=rows[rows.length-1].fcf;
+  const tv=lastFCF*(1+p.gterm/100)/(p.wacc/100-p.gterm/100);
+  const pvTV=tv/Math.pow(1+p.wacc/100,p.years-0.5);
+  const ev=pvSum+pvTV,eq=ev-p.debt+p.mino,ps=eq/SHARES;
+  return{rows,pvMa,pvAf,pvSum,pvTV,ev,eq,ps,tvPct:Math.round(pvTV/ev*100),updown:(ps/COURS-1)*100,ebitdaAn1:rows[0].ebitda,caAn1:rows[0].ca};
+}
+
+function getP(){
+  return{ca_ma:gi('ca_ma'),g_ma1:gi('g_ma1'),g_ma2:gi('g_ma2'),em_ma:gi('em_ma'),
+    ca_af:gi('ca_af'),g_af1:gi('g_af1'),g_af2:gi('g_af2'),em_af:gi('em_af'),
+    da:gi('da'),tax:gi('tax'),cx1:gi('cx1'),cx2:gi('cx2'),cx3:gi('cx3'),
+    wacc:gi('wacc'),bfr:gi('bfr'),gterm:gi('gterm'),
+    years:Math.max(5,Math.min(15,gi('years'))),debt:gi('debt'),mino:gi('mino')};
+}
+
+function triggerVal(){
+  const p=getP(),res=calcV2(p);
+  if(!res){
+    document.getElementById('kpi-row').innerHTML='<div class="alert rd" style="grid-column:span 4">g ≥ WACC — valeur terminale infinie. Réduisez g ou augmentez le WACC.</div>';
+    document.getElementById('sig-bar').innerHTML='';
+    return;
+  }
+  const ud=res.updown,cls=ud>0?'gr':'rd';
+  document.getElementById('kpi-row').innerHTML=`
+    <div class="tile gr"><div class="lbl">Valeur d'entreprise (EV)</div><div class="val">${fmtMds(res.ev)}</div><div class="sub">${fmtM(res.ev)} MMAD</div></div>
+    <div class="tile bl"><div class="lbl">Equity Value</div><div class="val">${fmtMds(res.eq)}</div><div class="sub">${fmtM(res.eq)} MMAD</div></div>
+    <div class="tile pu"><div class="lbl">Valeur / action DCF V2</div><div class="val">${fmtPS(res.ps)}</div><div class="sub">${fmtM(res.eq)} MMAD ÷ ${SHARES.toFixed(1)} M actions</div></div>
+    <div class="tile ${cls}"><div class="lbl">Prime / Décote vs cours</div><div class="val">${fmtPct(ud)}</div><div class="sub">vs ${COURS} MAD — BVC figé</div></div>`;
+  const lvl=ud>15?'gr':ud>0?'bl':ud>-15?'am':'rd';
+  const msg=ud>15?'Potentiel de hausse significatif — titre sous-évalué':ud>0?'Légèrement sous-évalué — valorisation proche du cours':ud>-15?'Légèrement surévalué — valorisation tendue':'Potentiellement surévalué selon ce modèle';
+  const evEb=(res.ev/res.ebitdaAn1).toFixed(1);
+  document.getElementById('sig-bar').innerHTML=`<div class="alert ${lvl}">${msg}. &nbsp; DCF V2 : <strong>${fmtPS(res.ps)}</strong> · Cours : <strong>${COURS} MAD</strong> · EV/EBITDA an 1 : <strong>${evEb}x</strong> · TV : <strong>${res.tvPct}%</strong> de l'EV</div>`;
+
+  let h='<tr><th>An</th><th>CA Maroc</th><th>CA Afrique</th><th>CA total</th><th>EBITDA</th><th>CAPEX%</th><th>FCF Maroc</th><th>FCF Afrique</th><th>FCF total</th><th>FCF act.</th></tr>';
+  res.rows.forEach(r=>{
+    const rc=r.cxPct===p.cx1?' class="tr-warn"':r.cxPct===p.cx3?' class="tr-hi"':'';
+    h+=`<tr${rc}><td>${r.y}</td><td>${fmtM(r.ca_ma)}</td><td>${fmtM(r.ca_af)}</td><td>${fmtM(r.ca)}</td><td>${fmtM(r.ebitda)}</td><td>${r.cxPct}%</td><td>${fmtM(r.fcf_ma)}</td><td>${fmtM(r.fcf_af)}</td><td>${fmtM(r.fcf)}</td><td>${fmtM(r.pv)}</td></tr>`;
+  });
+  document.getElementById('fcf-tbl').innerHTML=h;
+
+  const lbls=res.rows.map(r=>'An '+r.y);
+  mk('ch-fcf',{type:'bar',data:{labels:lbls,datasets:[
+    {label:'Maroc',data:res.rows.map(r=>Math.round(r.pv_ma)),backgroundColor:'rgba(59,130,246,.75)',borderRadius:3},
+    {label:'Afrique',data:res.rows.map(r=>Math.round(r.pv_af)),backgroundColor:'rgba(34,197,94,.75)',borderRadius:3},
+    {label:'TV',data:res.rows.map((_,i)=>i===res.rows.length-1?Math.round(res.pvTV):0),backgroundColor:'rgba(167,139,250,.75)',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>fmtM(v)},grid:{color:'#2a2f45'}}}}},'fcf');
+
+  document.getElementById('pie-leg').innerHTML=`
+    <span><span class="dot" style="background:#3b82f6"></span>FCF Maroc ${fmtM(res.pvMa)} MMAD</span>
+    <span><span class="dot" style="background:#22c55e"></span>FCF Afrique ${fmtM(res.pvAf)} MMAD</span>
+    <span><span class="dot" style="background:#a78bfa"></span>TV ${fmtM(res.pvTV)} MMAD (${res.tvPct}%)</span>`;
+  mk('ch-pie',{type:'doughnut',data:{labels:['FCF Maroc','FCF Afrique','Valeur terminale'],
+    datasets:[{data:[Math.round(res.pvMa),Math.round(res.pvAf),Math.round(res.pvTV)],backgroundColor:['#3b82f6','#22c55e','#a78bfa'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}},'pie');
+
+  mk('ch-bridge',{type:'bar',data:{labels:['EV DCF','− Dette IFRS16','+ Adj. Mino.','= Equity Value'],
+    datasets:[{data:[+(res.ev/1000).toFixed(1),+(-p.debt/1000).toFixed(1),+(p.mino/1000).toFixed(1),+(res.eq/1000).toFixed(1)],
+      backgroundColor:['#3b82f6','#ef4444','#f59e0b','#22c55e'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>v.toFixed(1)+' Mds'},grid:{color:'#2a2f45'}},x:{grid:{display:false}}}}},'bridge');
+
+  const evEb2=(res.ev/res.ebitdaAn1).toFixed(1);
+  const evCA=(res.ev/res.caAn1).toFixed(2);
+  const per=(res.ps/(5650/SHARES)).toFixed(1);
+  const efcf=(res.ev/(res.ebitdaAn1-res.caAn1*p.cx3/100)).toFixed(1);
+  set('m1',evEb2+'x');set('m1r',+evEb2<=8?'Dans la fourchette (5–8x)':'Au-dessus');
+  set('m2',evCA+'x');set('m2r',+evCA<=3?'Dans la fourchette':'Exigeant');
+  set('m3',per+'x');set('m3r',+per<12?'Attrayant':+per<=18?'Dans la norme':'Élevé');
+  set('m4',efcf+'x');set('m4r',+efcf<=15?'Dans la fourchette (10–18x)':'Exigeant');
+}
+
+function buildMat(cid,rk,rVals,ck,cVals,p){
+  const allV=[];
+  rVals.forEach(rv=>cVals.forEach(cv=>{const pp={...p};pp[rk]=rv;pp[ck]=cv;const r=calcV2(pp);if(r)allV.push(r.ps);}));
+  if(!allV.length){document.getElementById(cid).innerHTML='<p style="color:var(--mu);font-size:11px;padding:.5rem">Paramètres invalides</p>';return;}
+  const mn=Math.min(...allV),mx=Math.max(...allV);
+  const bR=p[rk],bC=p[ck];
+  let html=`<div class="sg" style="grid-template-columns:auto ${cVals.map(()=>'1fr').join(' ')};gap:2px">`;
+  html+=`<div style="padding:3px;font-size:9px;color:var(--dm)">${rk}↓/${ck}→</div>`;
+  cVals.forEach(c=>{html+=`<div style="padding:3px;font-size:9px;font-weight:700;color:var(--mu);text-align:center">${c}</div>`;});
+  rVals.forEach(rv=>{
+    html+=`<div style="padding:3px 5px;font-size:9px;font-weight:700;color:var(--mu)">${rv}</div>`;
+    cVals.forEach(cv=>{
+      const pp={...p};pp[rk]=rv;pp[ck]=cv;
+      const r=calcV2(pp);
+      if(!r){html+=`<div class="sc" style="background:var(--cd);color:var(--dm)">—</div>`;return;}
+      const v=r.ps,t2=(v-mn)/(mx-mn||1);
+      const isC=Math.abs(rv-bR)<0.01&&Math.abs(cv-bC)<0.01;
+      const bg=t2>.66?'rgba(34,197,94,.18)':t2>.33?'rgba(245,158,11,.18)':'rgba(239,68,68,.18)';
+      const fg=t2>.66?'#22c55e':t2>.33?'#f59e0b':'#ef4444';
+      const ud=((v/COURS-1)*100).toFixed(1);
+      html+=`<div class="sc" style="background:${bg};color:${fg};${isC?'outline:1.5px solid #3b82f6;outline-offset:-1px':''}">
+        ${v.toFixed(2)}<span class="sp">${+ud>=0?'+':''}${ud}%</span></div>`;
+    });
+  });
+  html+='</div>';
+  document.getElementById(cid).innerHTML=html;
+}
+
+function triggerSens(){
+  const p=getP(),r=calcV2(p);if(!r)return;
+  const w=p.wacc,g=p.gterm,em=p.em_ma,gaf=p.g_af1,cx=p.cx3;
+  buildMat('s1','wacc',[w-1.5,w-.75,w,w+.75,w+1.5],'gterm',[g-1,g-.5,g,g+.5,g+1],p);
+  buildMat('s2','em_ma',[em-6,em-3,em,em+3,em+6],'g_af1',[gaf-2,gaf-1,gaf,gaf+1,gaf+2],p);
+  buildMat('s3','cx3',[cx-4,cx-2,cx,cx+2,cx+4],'wacc',[w-1.5,w-.75,w,w+.75,w+1.5],p);
+}
+
+function triggerScen(){
+  const p=getP();
+  const SCENS=[
+    {lbl:'Optimiste',cl:'gr',g_ma1:2,g_ma2:3,g_af1:8,g_af2:6,em_ma:57,em_af:45,cx1:25,cx2:19,cx3:14,wacc:7.5,gterm:3.0,debt:21000,mino:-4000},
+    {lbl:'Base',cl:'bl',g_ma1:1,g_ma2:2,g_af1:6,g_af2:4.5,em_ma:55,em_af:43,cx1:25,cx2:20,cx3:16,wacc:8.0,gterm:2.5,debt:21000,mino:-4500},
+    {lbl:'Pessimiste',cl:'am',g_ma1:-1,g_ma2:0.5,g_af1:3.5,g_af2:2.5,em_ma:52,em_af:41,cx1:26,cx2:22,cx3:18,wacc:9.0,gterm:2.0,debt:21000,mino:-5000}
+  ];
+  const R=SCENS.map(s=>calcV2({...p,...s}));
+  document.getElementById('scen-tiles').innerHTML=SCENS.map((s,i)=>{
+    const r=R[i];if(!r)return '';
+    return `<div class="tile ${s.cl}"><div class="lbl">${s.lbl}</div><div class="val">${fmtPS(r.ps)}</div><div class="sub">${fmtPct(r.updown)} vs cours · EV ${fmtMds(r.ev)}</div></div>`;
+  }).join('');
+  const vals=R.map(r=>r?+r.ps.toFixed(2):null);
+  mk('ch-scen',{type:'bar',
+    data:{labels:['Optimiste','Base','Pessimiste','Cours 95,50 MAD'],
+      datasets:[
+        {data:[vals[0],vals[1],vals[2],null],backgroundColor:['#22c55e','#3b82f6','#f59e0b'],borderRadius:4},
+        {data:[null,null,null,COURS],backgroundColor:'#555c78',borderRadius:4}
+      ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{min:Math.floor(Math.min(...vals.filter(Boolean),COURS)*0.75),ticks:{callback:v=>v.toFixed(0)+' MAD'},grid:{color:'#2a2f45'}},x:{grid:{display:false}}}}},'scen');
+  const rows=[
+    ['Croissance Maroc ph.1',SCENS.map(s=>s.g_ma1+'%')],
+    ['Croissance Afrique ph.1',SCENS.map(s=>s.g_af1+'%')],
+    ['Marge EBITDA Maroc',SCENS.map(s=>s.em_ma+'%')],
+    ['Marge EBITDA Afrique',SCENS.map(s=>s.em_af+'%')],
+    ['CAPEX terminal',SCENS.map(s=>s.cx3+'%')],
+    ['WACC',SCENS.map(s=>s.wacc+'%')],
+    ['g terminal',SCENS.map(s=>s.gterm+'%')],
+    ['EV',R.map(r=>r?fmtMds(r.ev):'—')],
+    ['Valeur / action',R.map(r=>r?fmtPS(r.ps):'—')],
+    ['Prime / Décote',R.map(r=>r?fmtPct(r.updown):'—')]
+  ];
+  let th='<tr><th style="text-align:left">Paramètre</th>'+SCENS.map(s=>`<th>${s.lbl}</th>`).join('')+'</tr>';
+  let td=rows.map((r,ri)=>`<tr${ri>=7?' class="tr-tot"':''}><td>${r[0]}</td>${r[1].map(v=>`<td>${v}</td>`).join('')}</tr>`).join('');
+  document.getElementById('scen-tbl').innerHTML=th+td;
+}
+
+function compute(){
+  const id=document.querySelector('.panel.active')?.id||'';
+  if(id==='panel-hist')renderHist();
+  else if(id==='panel-val')triggerVal();
+  else if(id==='panel-sens')triggerSens();
+  else if(id==='panel-scen')triggerScen();
+}
+
+setTimeout(()=>{renderHist();triggerVal();},200);
+</script>
